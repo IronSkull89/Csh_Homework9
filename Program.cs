@@ -42,16 +42,6 @@ int SetNonNegativeNumber(string greet)
     return number;
 }
 
-void Ordering(int minValue, int maxValue)
-{
-    if (minValue > maxValue)
-    {
-        int temp = minValue;
-        minValue = maxValue;
-        maxValue = temp;
-    }
-}
-
 
 // Задайте значение N. Напишите программу, которая выведет все натуральные числа в промежутке от N до 1.
 
