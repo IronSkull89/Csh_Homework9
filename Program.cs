@@ -7,9 +7,9 @@ int countTasks = 3;
 int task;
 
 string[] tasks = new string[countTasks];
-tasks[0] = "1. Задайте двумерный массив. Программа, которая упорядочит по убыванию элементы каждой строки двумерного массива.";
-tasks[1] = "2. Задайте прямоугольный двумерный массив. Программа, которая будет находить строку с наименьшей суммой элементов.";
-tasks[2] = "3. Задайте две матрицы. Программа, которая будет находить произведение двух матриц.";
+tasks[0] = "1. Задайте значение N. Программа, которая выведет все натуральные числа в промежутке от N до 1.";
+tasks[1] = "2. Задайте значения M и N. Программа, которая найдёт сумму натуральных элементов в промежутке от M до N.";
+tasks[2] = "3. Программа вычисления функции Аккермана с помощью рекурсии. Даны два неотрицательных числа m и n.";
 
 
 int SelectionTask(string[] tasks, int countTasks)
@@ -28,10 +28,17 @@ int SelectionTask(string[] tasks, int countTasks)
     return task;
 }
 
-int SetNumber(string greet)
+int SetNaturalNumber(string greet)
 {
     Console.Write(greet);
-    if (!int.TryParse(Console.ReadLine(), out int number)) number = SetNumber(greet);
+    if (!int.TryParse(Console.ReadLine(), out int number) || number <= 0) number = SetNaturalNumber(greet);
+    return number;
+}
+
+int SetNonNegativeNumber(string greet)
+{
+    Console.Write(greet);
+    if (!int.TryParse(Console.ReadLine(), out int number) || number < 0) number = SetNonNegativeNumber(greet);
     return number;
 }
 
@@ -42,52 +49,6 @@ void Ordering(int minValue, int maxValue)
         int temp = minValue;
         minValue = maxValue;
         maxValue = temp;
-    }
-}
-
-int[,] CreateRandomInt2DArray(int row, int column, int minValue, int maxValue)
-{
-    int[,] array = new int[row, column];
-
-    Ordering(minValue, maxValue);
-
-    Random random = new Random();
-    for (int i = 0; i < array.GetLength(0); i++)
-    {
-        for (int j = 0; j < array.GetLength(1); j++)
-        {
-            array[i, j] = random.Next(minValue, maxValue + 1);
-        }
-    }
-    return array;
-}
-
-void PrintIntArray2D(int[,] array, int widthColumn)
-{
-    for (int i = 0; i < array.GetLength(0); i++)
-    {
-        for (int j = 0; j < array.GetLength(1); j++)
-        {
-            Console.Write(String.Format("{0," + -widthColumn + "}", array[i, j]));
-        }
-        Console.WriteLine();
-
-    }
-}
-
-void PrintIntArray3DWithIndex(int[,,] array, int widthColumn)
-{
-    for (int i = 0; i < array.GetLength(0); i++)
-    {
-        for (int j = 0; j < array.GetLength(1); j++)
-        {
-            for (int k = 0; k < array.GetLength(2); k++)
-            {
-                Console.Write(String.Format("{0," + -widthColumn + "}", array[i, j, k] + $"({i},{j},{k})"));
-            }
-            Console.WriteLine();
-        }
-        Console.WriteLine();
     }
 }
 
@@ -110,35 +71,14 @@ int SumSequence(int m, int n)
     return m + SumSequence(m + 1, n);
 }
 
-// Задайте две матрицы. Напишите программу, которая будет находить произведение двух матриц.
 
-int MultiplicationElement(int[,] array1, int[,] array2, int row, int column)
-{
-    int count = array1.GetLength(1);
-    int mult = 0;
-    for (int i = 0; i < count; i++)
-    {
-        mult += array1[row, i] * array2[i, column];
-    }
-    return mult;
-}
+// Напишите программу вычисления функции Аккермана с помощью рекурсии. Даны два неотрицательных числа m и n.
 
-int[,] MultiplicationMatrix(int[,] array1, int[,] array2)
+int FuncAccerman(int m, int n)
 {
-    if (array1.GetLength(0) == array2.GetLength(1) && array1.GetLength(1) == array2.GetLength(0))
-    {
-        int count = array1.GetLength(0);
-        int[,] multArray = new int[count, count];
-        for (int i = 0; i < count; i++)
-        {
-            for (int j = 0; j < count; j++)
-            {
-                multArray[i, j] = MultiplicationElement(array1, array2, i, j);
-            }
-        }
-        return multArray;
-    }
-    else return new int[1, 1];
+    if (m == 0) return n + 1;
+    if (m > 0 && n == 0) return FuncAccerman(m - 1, 1);
+    return FuncAccerman(m - 1, FuncAccerman(m, n - 1));
 }
 
 
@@ -152,26 +92,15 @@ while (working.ToLower() == "Y".ToLower())
     switch (task)
     {
         case 1:
-            PrintNumbers(SetNumber("Введите натуральное число: "));
+            PrintNumbers(SetNaturalNumber("Введите натуральное число: "));
             break;
         case 2:
-            Console.WriteLine("Сумма последовательности: " + SumSequence(SetNumber("Введите начальное число последовательности: "), SetNumber("Введите конечное число последовательности: ")));
+            Console.WriteLine("Сумма последовательности: " + SumSequence(SetNaturalNumber("Введите натуральное начальное число последовательности: "),
+                                                                         SetNaturalNumber("Введите натуральное конечное число последовательности: ")));
             break;
         case 3:
-            int countRow = SetNumber("Введите количество строк в 1-м массиве (столбцов во 2-м соответственно): ");
-            int countColumn = SetNumber("Введите количество столбцов в 1-м массиве (строк во 2-м ссоответственно): ");
-
-            int[,] array1 = CreateRandomInt2DArray(countRow, countColumn, 0, 5);
-            Console.WriteLine("Матрица 1:");
-            PrintIntArray2D(array1, 4);
-
-            int[,] array2 = CreateRandomInt2DArray(countColumn, countRow, 0, 5);
-            Console.WriteLine("Матрица 2:");
-            PrintIntArray2D(array2, 4);
-
-            int[,] multArray = MultiplicationMatrix(array1, array2);
-            Console.WriteLine("Результат перемножения матриц:");
-            PrintIntArray2D(multArray, 6);
+            Console.WriteLine("A(m,n) = " + FuncAccerman(SetNonNegativeNumber("Введите неотрицательный пареметр M функции Аккемана: "),
+                                                         SetNonNegativeNumber("Введите неотрицательный пареметр N функции Аккемана: ")));
             break;
     }
     Console.WriteLine("\r\nВведите 'Y' для продолжения или любой другой символ для закрытия...");
